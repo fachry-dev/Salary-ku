@@ -19,12 +19,6 @@ use App\Http\Controllers\Admin\SalaryController as AdminSalaryController; // Men
 use App\Http\Controllers\ProfileController;
 
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-*/
-
 Route::get('/', function () {
     if (Auth::check()) {
         if (Auth::user()->isAdmin()) {
@@ -44,18 +38,18 @@ Route::post('login', [AuthenticatedSessionController::class, 'store'])->middlewa
 Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->middleware('auth')->name('logout');
 // require __DIR__.'/auth.php'; // Aktifkan ini jika Anda pakai Breeze/UI dan komentari 3 baris di atas
 
-Route::get('/dashboard', function () {
-    if (Auth::check()) {
-        if (Auth::user()->isAdmin()) {
-            return redirect()->route('admin.dashboard');
-        } elseif (Auth::user()->isKaryawan()) {
-            return redirect()->route('karyawan.dashboard');
-        }
-    }
-    return redirect()->route('login');
-})->middleware(['auth'])->name('dashboard');
-
 Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', function () {
+        if (Auth::check()) {
+            if (Auth::user()->isAdmin()) {
+                return redirect()->route('admin.dashboard');
+            } elseif (Auth::user()->isKaryawan()) {
+                return redirect()->route('karyawan.dashboard');
+            }
+        }
+        return redirect()->route('login');
+    })->name('dashboard');
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
 
@@ -86,8 +80,8 @@ Route::middleware('auth')->group(function () {
 
         // Kelola Gaji (Salary)
         // URL tetap 'gaji' untuk konsistensi, tapi controller-nya AdminSalaryController
-        Route::get('gaji', [AdminSalaryController::class, 'index'])->name('gaji.index');
-        Route::get('gaji/create', [AdminSalaryController::class, 'createForm'])->name('gaji.create');
+        Route::get('gaji', [AdminSalaryController::class, 'index'])->name('salary.index');
+        Route::get('gaji/create', [AdminSalaryController::class, 'createForm'])->name('salary.create');
         Route::post('gaji/calculate-store', [AdminSalaryController::class, 'calculateAndStore'])->name('gaji.calculate.store');
         Route::get('gaji/{gaji}', [AdminSalaryController::class, 'show'])->name('gaji.show');
         Route::get('gaji/{gaji}/edit', [AdminSalaryController::class, 'edit'])->name('gaji.edit');
