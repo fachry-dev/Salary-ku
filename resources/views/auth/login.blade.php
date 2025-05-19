@@ -55,9 +55,9 @@
             
             // Simple demo login logic
             if (email === 'admin@example.com' && password === 'password') {
-                window.location.href = 'admin/dashboard.html';
+                window.location.href = 'admin/dashboard';
             } else if (email === 'employee@example.com' && password === 'password') {
-                window.location.href = 'employee/dashboard.html';
+                window.location.href = 'admin/dashboard';
             } else {
                 alert('Invalid credentials');
             }
