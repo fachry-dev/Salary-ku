@@ -27,17 +27,17 @@
                 <p class="text-muted small mb-0">Login to access your dashboard</p>
             </div>
             <div class="card-body p-4">
-                <form action="{{ route('login') }}" method="POST" id="loginForm">
+               <form action="{{ route('login') }}" method="POST">
     @csrf
     <div class="mb-3">
         <label for="email" class="form-label">Email</label>
-        <input type="email" class="form-control" id="email" name="email" placeholder="nama@email.com" required>
+        <input type="email" class="form-control" id="email" name="email" required>
     </div>
     <div class="mb-3">
         <label for="password" class="form-label">Password</label>
         <input type="password" class="form-control" id="password" name="password" required>
     </div>
-    <button type="submit" class="btn btn-primary w-100">Login</button>
+    <button type="submit" class="btn btn-primary">Login</button>
 </form>
             </div>
             <div class="card-footer bg-white text-center py-3">
