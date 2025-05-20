@@ -6,18 +6,15 @@ use Illuminate\Support\Facades\Route;
 // Controller Autentikasi
 use App\Http\Controllers\ProfileController;
 
-// Controller Profile
+// Controller for Authentication
 use App\Http\Controllers\Auth\AuthController;
 
-// Controller Karyawan (untuk absensi)
-use App\Http\Controllers\Auth\AuthenticatedSessionController;
-
 // Controller Admin
-use App\Http\Controllers\AttendanceController; // Sebelumnya AbsensiController
+use App\Http\Controllers\AttendanceController; 
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
-use App\Http\Controllers\Admin\SalaryController as AdminSalaryController; // Sebelumnya GajiController
-use App\Http\Controllers\Admin\EmployeeController as AdminEmployeeController; // Sebelumnya KaryawanController
-use App\Http\Controllers\Admin\AttendanceManagementController as AdminAttendanceManagementController; // Sebelumnya KelolaAbsensiController
+use App\Http\Controllers\Admin\SalaryController as AdminSalaryController;
+use App\Http\Controllers\Admin\EmployeeController as AdminEmployeeController;
+use App\Http\Controllers\Admin\AttendanceManagementController as AdminAttendanceManagementController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,7 +27,7 @@ Route::get('/', function () {
     if (Auth::check()) {
         if (Auth::user()->isAdmin()) {
             return redirect()->route('admin.dashboard');
-        } elseif (Auth::user()->isKaryawan()) { // Asumsi ada method isKaryawan() di model User
+        } elseif (Auth::user()->role === 'employee') { // Changed from isKaryawan() to check role directly
             return redirect()->route('employee.dashboard');
         }
         // Fallback jika role tidak sesuai
@@ -57,7 +54,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', function () {
         if (Auth::user()->isAdmin()) {
             return redirect()->route('admin.dashboard');
-        } elseif (Auth::user()->isKaryawan()) {
+        } elseif (Auth::user()->role === 'employee') { // Changed from isKaryawan()
             return redirect()->route('employee.dashboard');
         }
         return redirect()->route('login'); // Fallback
@@ -72,35 +69,31 @@ Route::middleware('auth')->group(function () {
 
 
     // Rute untuk Karyawan
-    Route::middleware('role:karyawan')->prefix('karyawan')->name('employee.')->group(function () {
+    Route::middleware('role:employee')->prefix('employee')->name('employee.')->group(function () {
         Route::get('/dashboard', [AttendanceController::class, 'dashboard'])->name('dashboard');
-        Route::post('/absensi/clock-in', [AttendanceController::class, 'clockIn'])->name('absensi.clockin');
-        Route::post('/absensi/clock-out', [AttendanceController::class, 'clockOut'])->name('absensi.clockout');
+        Route::post('/attendance/clock-in', [AttendanceController::class, 'clockIn'])->name('attendance.clockin');
+        Route::post('/attendance/clock-out', [AttendanceController::class, 'clockOut'])->name('attendance.clockout');
+        Route::get('/attendance/history', [AttendanceController::class, 'dashboard'])->name('attendances.history');
     });
 
     // Rute untuk Admin
     Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 
-        // Menggunakan nama resource 'karyawan' untuk URL, tapi controller EmployeeController
-        Route::resource('karyawan', AdminEmployeeController::class); // CRUD Karyawan
+        // Employee Routes
+        Route::resource('employees', AdminEmployeeController::class);
 
-        // Kelola Absensi (Attendance Management)
-        Route::get('absensi', [AdminAttendanceManagementController::class, 'index'])->name('absensi.index');
-        Route::get('absensi/create', [AdminAttendanceManagementController::class, 'create'])->name('absensi.create');
-        Route::post('absensi', [AdminAttendanceManagementController::class, 'store'])->name('absensi.store');
-        Route::get('absensi/{absensi}/edit', [AdminAttendanceManagementController::class, 'edit'])->name('absensi.edit');
-        Route::put('absensi/{absensi}', [AdminAttendanceManagementController::class, 'update'])->name('absensi.update');
-        Route::delete('absensi/{absensi}', [AdminAttendanceManagementController::class, 'destroy'])->name('absensi.destroy');
+        // Attendance Management
+        Route::resource('attendances', AdminAttendanceManagementController::class);
 
-        // Kelola Gaji (Salary)
-        Route::get('gaji', [AdminSalaryController::class, 'index'])->name('gaji.index');
-        Route::get('gaji/create', [AdminSalaryController::class, 'createForm'])->name('gaji.create');
-        Route::post('gaji/calculate-store', [AdminSalaryController::class, 'calculateAndStore'])->name('gaji.calculate.store');
-        Route::get('gaji/{gaji}', [AdminSalaryController::class, 'show'])->name('gaji.show');
-        Route::get('gaji/{gaji}/edit', [AdminSalaryController::class, 'edit'])->name('gaji.edit');
-        Route::put('gaji/{gaji}', [AdminSalaryController::class, 'update'])->name('gaji.update');
-        Route::delete('gaji/{gaji}', [AdminSalaryController::class, 'destroy'])->name('gaji.destroy');
-        Route::get('gaji/{gaji}/print-slip', [AdminSalaryController::class, 'printSlip'])->name('gaji.print.slip');
+        // Salary Management
+        Route::get('salary', [AdminSalaryController::class, 'index'])->name('salary.index');
+        Route::get('salary/create', [AdminSalaryController::class, 'createForm'])->name('salary.create');
+        Route::post('salary/calculate-store', [AdminSalaryController::class, 'calculateAndStore'])->name('salary.calculate.store');
+        Route::get('salary/{salary}', [AdminSalaryController::class, 'show'])->name('salary.show');
+        Route::get('salary/{salary}/edit', [AdminSalaryController::class, 'edit'])->name('salary.edit');
+        Route::put('salary/{salary}', [AdminSalaryController::class, 'update'])->name('salary.update');
+        Route::delete('salary/{salary}', [AdminSalaryController::class, 'destroy'])->name('salary.destroy');
+        Route::get('salary/{salary}/print-slip', [AdminSalaryController::class, 'printSlip'])->name('salary.slip');
     });
 });
