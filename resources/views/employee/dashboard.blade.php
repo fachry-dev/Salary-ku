@@ -29,7 +29,7 @@
                                 @endif
                             </div>
                         @else
-                            <form action="{{ route('karyawan.absensi.clockin') }}" method="POST">
+                            <form action="{{ route('employee.attendances.history') }}" method="POST">
                                 @csrf
                                 <div class="mb-3">
                                     <label for="notes_check_in" class="block text-sm font-medium text-gray-700">Catatan (Opsional)</label>
@@ -57,7 +57,7 @@
                                 @endif
                             </div>
                         @elseif ($todayAttendance && $todayAttendance->check_in)
-                            <form action="{{ route('employees.absensi.clockout') }}" method="POST">
+                            <form action="{{ route('employee.attendances.history') }}" method="POST">
                                 @csrf
                                 <div class="mb-3">
                                     <label for="notes_check_out" class="block text-sm font-medium text-gray-700">Catatan (Opsional)</label>
