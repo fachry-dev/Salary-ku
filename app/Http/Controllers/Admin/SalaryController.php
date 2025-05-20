@@ -109,18 +109,18 @@ class SalaryController extends Controller
         }
     }
 
-    public function show(Payroll $salary)
-    {
-        $salary->load('employee');
-        return view('admin.salary.show', compact('salary')); // For simple salary slip
-    }
+    public function show(Payroll $gaji)
+{
+    $gaji->load('employee');
+    return view('admin.salary.show', compact('gaji'));
+}
 
-    public function edit(Payroll $salary)
-    {
-        $salary->load('employee');
-        $employees = Employee::orderBy('full_name')->get();
-        return view('admin.salary.edit', compact('salary', 'employees'));
-    }
+public function edit(Payroll $gaji)
+{
+    $gaji->load('employee');
+    $employees = Employee::orderBy('name')->get();
+    return view('admin.salary.edit', compact('gaji', 'employees'));
+}
 
     public function update(Request $request, Payroll $salary)
     {

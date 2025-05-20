@@ -23,7 +23,7 @@ Route::get('/', function () {
         if (Auth::user()->isAdmin()) {
             return redirect()->route('admin.dashboard');
         } else {
-            return redirect()->route('karyawan.dashboard');
+            return redirect()->route('employee.dashboard');
         }
     }
     return redirect()->route('login');
@@ -40,7 +40,7 @@ Route::middleware('auth')->group(function () {
             if (Auth::user()->isAdmin()) {
                 return redirect()->route('admin.dashboard');
             } else {
-                return redirect()->route('karyawan.dashboard');
+                return redirect()->route('employee.dashboard');
             }
         }
         return redirect()->route('login');
@@ -51,7 +51,7 @@ Route::middleware('auth')->group(function () {
     Route::put('/password', [ProfileController::class, 'updatePassword'])->name('password.update');
 
     // Rute untuk Karyawan
-    Route::middleware('role:karyawan')->prefix('karyawan')->name('karyawan.')->group(function () {
+    Route::middleware('role:karyawan')->prefix('karyawan')->name('employee.')->group(function () {
         Route::get('/dashboard', [AttendanceController::class, 'dashboard'])->name('dashboard');
         Route::post('/absensi/clock-in', [AttendanceController::class, 'clockIn'])->name('absensi.clockin');
         Route::post('/absensi/clock-out', [AttendanceController::class, 'clockOut'])->name('absensi.clockout');

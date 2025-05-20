@@ -68,4 +68,5 @@ class Kernel extends HttpKernel
         'redirectIfAdminAuthenticated' => \App\Http\Middleware\RedirectIfAdminAuthenticated::class,
         'role' => \App\Http\Middleware\RoleMiddleware::class,
     ];
+
 }

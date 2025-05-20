@@ -8,6 +8,9 @@ use App\Models\Employee;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
+
+
+
 class UserSeeder extends Seeder
 {
     /**
@@ -15,6 +18,8 @@ class UserSeeder extends Seeder
      *
      * @return void
      */
+
+     
     public function run()
     {
         // Admin User
@@ -69,5 +74,14 @@ class UserSeeder extends Seeder
             'gaji_pokok' => 6500000,
             'status' => 'aktif', // Adding status field which is likely needed
         ]);
+
+        User::create([
+        'name' => 'Admin',
+        'email' => 'admin@example.com',
+        'password' => bcrypt('123456'),
+        'role' => 'admin'
+    ]);
+    
     }
+    
 }

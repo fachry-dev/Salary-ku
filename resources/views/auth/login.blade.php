@@ -27,17 +27,18 @@
                 <p class="text-muted small mb-0">Login to access your dashboard</p>
             </div>
             <div class="card-body p-4">
-                <form id="loginForm">
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="email" placeholder="your@email.com" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="password" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="password" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary w-100">Login</button>
-                </form>
+                <form action="{{ route('login') }}" method="POST" id="loginForm">
+    @csrf
+    <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" class="form-control" id="email" name="email" placeholder="nama@email.com" required>
+    </div>
+    <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <input type="password" class="form-control" id="password" name="password" required>
+    </div>
+    <button type="submit" class="btn btn-primary w-100">Login</button>
+</form>
             </div>
             <div class="card-footer bg-white text-center py-3">
                 <p class="text-muted small mb-0">Demo credentials:</p>
@@ -47,21 +48,6 @@
         </div>
     </div>
 
-    <script>
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            
-            // Simple demo login logic
-            if (email === 'admin@example.com' && password === 'password') {
-                window.location.href = 'admin/dashboard';
-            } else if (email === 'employee@example.com' && password === 'password') {
-                window.location.href = 'admin/dashboard';
-            } else {
-                alert('Invalid credentials');
-            }
-        });
-    </script>
+    
 </body>
 </html>
