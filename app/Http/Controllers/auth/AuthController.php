@@ -31,19 +31,45 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
-        if (Auth::attempt($credentials)) {
+        // Coba autentikasi dengan fitur "remember me"
+        if (Auth::attempt($credentials, $request->filled('remember'))) {
+            // Berhasil autentikasi
             $request->session()->regenerate();
 
-            if (Auth::user()->isAdmin()) {
+            // Hapus error sesi sebelumnya
+            $request->session()->forget('auth.failed');
+
+            // Dapatkan user yang sudah autentikasi
+            $user = Auth::user();
+
+            // Baris debug - bisa dihapus di production
+            \Log::info('User berhasil login', ['id' => $user->id, 'email' => $user->email, 'role' => $user->role]);
+
+            // Redirect berdasarkan peran
+            if ($user->role === 'admin') {
                 return redirect()->route('admin.dashboard');
-            } else {
+            } else if ($user->role === 'employee') {
                 return redirect()->route('employee.dashboard');
+            } else {
+                // Peran tidak valid - logout dan redirect dengan pesan
+                Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+
+                return redirect()->route('login')
+                    ->with('error', 'Peran pengguna tidak valid. Silakan hubungi administrator.');
             }
         }
 
-        return back()->withErrors([
-            'email' => 'Kredensial yang diberikan tidak cocok dengan catatan kami.',
-        ])->onlyInput('email');
+        // Autentikasi gagal
+        \Log::warning('Percobaan login gagal', ['email' => $request->email]);
+
+        return back()
+            ->withInput($request->only('email'))
+            ->withErrors([
+                'email' => 'Kredensial yang diberikan tidak cocok dengan catatan kami.',
+                
+            ]);
     }
 
     /**

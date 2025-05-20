@@ -22,6 +22,6 @@ class AppServiceProvider extends ServiceProvider
     {
         Route::aliasMiddleware('admin', \App\Http\Middleware\AdminMiddleware::class);
         Route::aliasMiddleware('employee', \App\Http\Middleware\EmployeeMiddleware::class);
-         Route::aliasMiddleware('role', \App\Http\Middleware\RoleMiddleware::class);
+        Route::aliasMiddleware('role', \App\Http\Middleware\RoleMiddleware::class);
     }
 }
